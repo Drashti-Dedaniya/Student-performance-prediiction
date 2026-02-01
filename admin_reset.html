@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Reset</title>
+<style>
+body{font-family:Segoe UI;background:#a6a6da;padding:30px}
+.card{background:#dcd3ff;padding:30px;border-radius:20px;max-width:400px;margin:auto;text-align:center}
+button{
+  padding:12px 20px;
+  border:none;
+  border-radius:10px;
+  background:#b22222;
+  color:white;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<script>
+let u = JSON.parse(localStorage.getItem("loggedUser"));
+if(!u || u.role!=="Admin"){ location.href="dashboard.html"; }
+</script>
+
+<div class="card">
+<h2>⚠ Reset System</h2>
+<p>This will delete all student data</p>
+<button onclick="resetData()">RESET</button>
+</div>
+
+<script>
+function resetData(){
+  if(confirm("Are you sure?")){
+    localStorage.clear();
+    alert("System reset");
+    location.href="login.html";
+  }
+}
+</script>
+
+</body>
+</html>
