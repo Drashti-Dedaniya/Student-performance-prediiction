@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin Panel</title>
+<style>
+body{font-family:Segoe UI;background:#a6a6da;padding:30px}
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+  max-width:500px;
+  margin:auto;
+}
+.card{
+  background:#dcd3ff;
+  padding:25px;
+  border-radius:20px;
+  text-align:center;
+  cursor:pointer;
+  box-shadow:0 10px 20px rgba(0,0,0,0.15);
+}
+</style>
+</head>
+
+<body>
+
+<script>
+let u = JSON.parse(localStorage.getItem("loggedUser"));
+if(!u || u.role!=="Admin"){ location.href="dashboard.html"; }
+</script>
+
+<h2 style="text-align:center;">🛠 Admin Panel</h2>
+
+<div class="grid">
+  <div class="card" onclick="go('view')">👀 View All Data</div>
+  <div class="card" onclick="go('prediction')">🎯 Prediction</div>
+  <div class="card" onclick="go('users')">👥 Users</div>
+  <div class="card" onclick="go('reset')">♻ Reset System</div>
+</div>
+
+<script>
+function go(type){
+  if(type==="view") location.href="admin_view.html";
+  if(type==="prediction") location.href="admin_prediction.html";
+  if(type==="users") location.href="admin_users.html";
+  if(type==="reset") location.href="admin_reset.html";
+}
+</script>
+
+</body>
+</html>
