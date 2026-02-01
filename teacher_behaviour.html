@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Behavior</title>
+<style>
+body{font-family:Segoe UI;background:#a6a6da;padding:30px}
+.card{background:#dcd3ff;padding:25px;border-radius:20px;max-width:400px;margin:auto}
+select,button{width:100%;padding:10px;margin-top:10px;border-radius:10px;border:none}
+button{background:#4a4a86;color:white}
+</style>
+</head>
+
+<body>
+
+<script>
+let u = JSON.parse(localStorage.getItem("loggedUser"));
+if(!u || u.role!=="Teacher"){ location.href="dashboard.html"; }
+</script>
+
+<div class="card">
+<h2>🙂 Behavior</h2>
+<select id="beh">
+  <option value="10">Excellent</option>
+  <option value="7">Good</option>
+  <option value="5">Average</option>
+  <option value="2">Poor</option>
+</select>
+<button onclick="save()">Save</button>
+</div>
+
+<script>
+function save(){
+  localStorage.setItem("behavior", document.getElementById("beh").value);
+  alert("Behavior saved");
+}
+</script>
+
+</body>
+</html>
