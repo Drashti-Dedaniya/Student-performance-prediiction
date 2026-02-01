@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Internal Marks</title>
+<style>
+body{font-family:Segoe UI;background:#a6a6da;padding:30px}
+.card{background:#dcd3ff;padding:25px;border-radius:20px;max-width:400px;margin:auto;text-align:center}
+</style>
+</head>
+
+<body>
+
+<script>
+let u = JSON.parse(localStorage.getItem("loggedUser"));
+if(!u || u.role!=="Student"){ location.href="dashboard.html"; }
+</script>
+
+<div class="card">
+<h2>📝 Internal Marks</h2>
+<p id="marks"></p>
+</div>
+
+<script>
+document.getElementById("marks").innerText =
+  localStorage.getItem("marks") || "Not Updated";
+</script>
+
+</body>
+</html>
