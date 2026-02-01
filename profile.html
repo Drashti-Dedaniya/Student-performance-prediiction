@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Profile</title>
+<style>
+body{
+  font-family:Segoe UI;
+  background:#a6a6da;
+  padding:30px;
+}
+.card{
+  background:#dcd3ff;
+  padding:25px;
+  border-radius:20px;
+  max-width:400px;
+  margin:auto;
+  box-shadow:0 10px 20px rgba(0,0,0,0.15);
+}
+input,button{
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+  border-radius:10px;
+  border:none;
+}
+button{
+  background:#4a4a86;
+  color:white;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h2>👤 Profile</h2>
+
+  <p><b>Name:</b> <span id="name"></span></p>
+  <p><b>Email:</b> <span id="email"></span></p>
+  <p><b>Role:</b> <span id="role"></span></p>
+
+  <!-- ✅ PARENT ONLY SECTION -->
+  <div id="parentSection" style="display:none;">
+    <hr>
+    <h3>👶 Child Information</h3>
+    <input id="childName" placeholder="Enter Child Name">
+    <button onclick="saveChild()">Save Child Name</button>
+    <p id="msg"></p>
+  </div>
+</div>
+
+<script>
+window.onload = function(){
+
+  let user = JSON.parse(localStorage.getItem("loggedUser"));
+  if(!user){
+    window.location.href="login.html";
+    return;
+  }
+
+  // show basic info
+  document.getElementById("name").innerText = user.name;
+  document.getElementById("email").innerText = user.email;
+  document.getElementById("role").innerText = user.role;
+
+  // show child section only for parent
+  if(user.role === "Parent"){
+    document.getElementById("parentSection").style.display = "block";
+    document.getElementById("childName").value =
+      localStorage.getItem("childName") || "";
+  }
+};
+
+function saveChild(){
+  let name = document.getElementById("childName").value;
+
+  if(!name){
+    alert("Please enter child name");
+    return;
+  }
+
+  localStorage.setItem("childName", name);
+  document.getElementById("msg").innerText = "✅ Child name saved successfully";
+}
+</script>
+
+</body>
+</html>
