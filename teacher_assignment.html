@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Add Assignments</title>
+<style>
+body{font-family:Segoe UI;background:#a6a6da;padding:30px}
+.card{background:#dcd3ff;padding:25px;border-radius:20px;max-width:400px;margin:auto}
+input,button{width:100%;padding:10px;margin-top:10px;border-radius:10px;border:none}
+button{background:#4a4a86;color:white}
+</style>
+</head>
+
+<body>
+
+<script>
+let u = JSON.parse(localStorage.getItem("loggedUser"));
+if(!u || u.role!=="Teacher"){ location.href="dashboard.html"; }
+</script>
+
+<div class="card">
+<h2>📘 Assignment Marks</h2>
+<input id="asg" type="number" placeholder="Assignment Avg Marks">
+<button onclick="save()">Save</button>
+</div>
+
+<script>
+function save(){
+  localStorage.setItem("assignments", document.getElementById("asg").value);
+  alert("Assignment marks saved");
+}
+</script>
+
+</body>
+</html>
