@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Child Behaviour</title>
+<style>
+body{font-family:Segoe UI;background:#a6a6da;padding:30px}
+.card{background:#dcd3ff;padding:25px;border-radius:20px;max-width:400px;margin:auto;text-align:center}
+</style>
+</head>
+
+<body>
+
+<script>
+let u = JSON.parse(localStorage.getItem("loggedUser"));
+if(!u || u.role!=="Parent"){ window.location.href="dashboard.html"; }
+</script>
+
+<div class="card">
+  <h2>🙂 Behaviour</h2>
+  <p>Child: <b id="child"></b></p>
+  <p id="beh"></p>
+</div>
+
+<script>
+document.getElementById("child").innerText =
+  localStorage.getItem("childName") || "Not Set";
+
+document.getElementById("beh").innerText =
+  localStorage.getItem("behavior") || "Not Updated";
+</script>
+
+</body>
+</html>
