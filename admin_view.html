@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>All Student Data</title>
+<style>
+body{font-family:Segoe UI;background:#a6a6da;padding:30px}
+.card{background:#dcd3ff;padding:25px;border-radius:20px;max-width:450px;margin:auto}
+p{margin:6px 0}
+</style>
+</head>
+
+<body>
+
+<script>
+let u = JSON.parse(localStorage.getItem("loggedUser"));
+if(!u || u.role!=="Admin"){ location.href="dashboard.html"; }
+</script>
+
+<div class="card">
+<h2>📊 Student Data</h2>
+
+<p><b>Attendance:</b> <span id="att"></span></p>
+<p><b>Assignments:</b> <span id="asg"></span></p>
+<p><b>Marks:</b> <span id="marks"></span></p>
+<p><b>Study Hours:</b> <span id="hrs"></span></p>
+<p><b>Behaviour:</b> <span id="beh"></span></p>
+<p><b>Location:</b> <span id="loc"></span></p>
+
+<hr>
+
+<p><b>Parent Child:</b> <span id="child"></span></p>
+</div>
+
+<script>
+att.innerText = localStorage.getItem("attendance") || "NA";
+asg.innerText = localStorage.getItem("assignments") || "NA";
+marks.innerText = localStorage.getItem("marks") || "NA";
+hrs.innerText = localStorage.getItem("hours") || "NA";
+beh.innerText = localStorage.getItem("behavior") || "NA";
+loc.innerText = localStorage.getItem("studentLocation") || "NA";
+child.innerText = localStorage.getItem("childName") || "NA";
+</script>
+
+</body>
+</html>
