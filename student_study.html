@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Study Hours</title>
+<style>
+body{font-family:Segoe UI;background:#a6a6da;padding:30px}
+.card{background:#dcd3ff;padding:25px;border-radius:20px;max-width:400px;margin:auto;text-align:center}
+</style>
+</head>
+
+<body>
+
+<script>
+let u = JSON.parse(localStorage.getItem("loggedUser"));
+if(!u || u.role!=="Student"){ location.href="dashboard.html"; }
+</script>
+
+<div class="card">
+<h2>⏱ Study Hours</h2>
+<p id="hrs"></p>
+</div>
+
+<script>
+document.getElementById("hrs").innerText =
+  (localStorage.getItem("hours") || "0") + " hrs/day";
+</script>
+
+</body>
+</html>
