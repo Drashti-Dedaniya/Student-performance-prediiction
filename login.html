@@ -71,6 +71,12 @@ function login(){
 
   window.location.href = "dashboard.html";
 }
+  localStorage.setItem("loggedUser", JSON.stringify({
+  role: role,       // student / teacher / parent / admin
+  username: email   // or name
+}));
+window.location.href = "index.html";
+
 </script>
 
 </body>
