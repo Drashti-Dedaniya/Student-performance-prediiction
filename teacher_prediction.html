@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Final Prediction</title>
+<style>
+body{font-family:Segoe UI;background:#a6a6da;padding:30px}
+.card{background:#dcd3ff;padding:30px;border-radius:20px;max-width:400px;margin:auto;text-align:center}
+</style>
+</head>
+
+<body>
+
+<script>
+let u = JSON.parse(localStorage.getItem("loggedUser"));
+if(!u || u.role!=="Teacher"){ location.href="dashboard.html"; }
+</script>
+
+<div class="card">
+<h2>🎯 Final Prediction</h2>
+<p id="result"></p>
+</div>
+
+<script>
+let att = +localStorage.getItem("attendance") || 0;
+let asg = +localStorage.getItem("assignments") || 0;
+let marks = +localStorage.getItem("marks") || 0;
+let hours = +localStorage.getItem("hours") || 0;
+let behavior = +localStorage.getItem("behavior") || 0;
+
+let score = (att*0.25)+(asg*0.25)+(marks*0.3)+(hours*5)+(behavior);
+
+let res = "Needs Improvement ❌";
+if(score>=80) res="🌟 Excellent – High Success";
+else if(score>=60) res="👍 Good Performance";
+else if(score>=45) res="⚠️ Average";
+
+document.getElementById("result").innerText = res;
+</script>
+
+</body>
+</html>
