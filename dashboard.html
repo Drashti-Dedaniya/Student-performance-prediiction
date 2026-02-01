@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Smart Student App</title>
+
+<style>
+body{
+  margin:0;
+  font-family:'Segoe UI', sans-serif;
+  background:#a6a6da;
+}
+
+/* Top Bar */
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px 20px;
+}
+.icon{
+  background:white;
+  width:45px;
+  height:45px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 6px 15px rgba(0,0,0,0.1);
+  font-size:20px;
+  cursor:pointer;
+}
+
+/* Profile */
+.profile{
+  padding:10px 20px;
+}
+
+/* Grid */
+.grid{
+  padding:20px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+}
+
+/* Cards */
+.card{
+  background:#dcd3ff;
+  border-radius:20px;
+  padding:30px 15px;
+  text-align:center;
+  box-shadow:0 10px 20px rgba(0,0,0,0.12);
+  cursor:pointer;
+  transition:0.2s;
+}
+.card:hover{
+  transform:translateY(-6px);
+}
+.card img{
+  width:65px;
+}
+.card h4{
+  margin-top:15px;
+  font-weight:600;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Top Bar -->
+<div class="topbar">
+  <div class="icon">☰</div>
+  <div style="display:flex;gap:15px;">
+    <div class="icon">🔔</div>
+    <div class="icon" onclick="window.location.href='profile.html'">👤</div>
+    <div class="icon" onclick="window.location.href='logout.html'">🚪</div>
+
+  </div>
+</div>
+
+<!-- Profile -->
+<div class="profile">
+  <h3>Hello, Student 👋</h3>
+  <p>Smart Student Performance Prediction</p>
+</div>
+
+<script>
+if(!localStorage.getItem("loggedUser")){
+  window.location.href = "login.html";
+}
+</script>
+
+
+
+<!-- Dashboard Cards -->
+<div class="grid">
+
+  <div class="card" onclick="openPage('attendance')">
+    <img src="https://cdn-icons-png.flaticon.com/512/2920/2920277.png">
+    <h4>Attendance</h4>
+  </div>
+
+  <div class="card" onclick="openPage('assignments')">
+    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135755.png">
+    <h4>Assignments</h4>
+  </div>
+
+  <div class="card" onclick="openPage('marks')">
+    <img src="https://cdn-icons-png.flaticon.com/512/1828/1828911.png">
+    <h4>Internal Marks</h4>
+  </div>
+
+  <div class="card" onclick="openPage('study')">
+    <img src="https://cdn-icons-png.flaticon.com/512/2972/2972557.png">
+    <h4>Study Hours</h4>
+  </div>
+
+  <div class="card" onclick="openPage('behavior')">
+    <img src="https://cdn-icons-png.flaticon.com/512/1995/1995574.png">
+    <h4>Behavior</h4>
+  </div>
+
+  <div class="card" onclick="openPage('prediction')">
+    <img src="https://cdn-icons-png.flaticon.com/512/3209/3209265.png">
+    <h4>Final Prediction</h4>
+  </div>
+
+</div>
+
+<script>
+let user = JSON.parse(localStorage.getItem("loggedUser"));
+
+function openPage(type){
+
+  // ================= TEACHER =================
+  if(user.role === "Teacher"){
+    if(type === "attendance") window.location.href = "teacher_attendance.html";
+    if(type === "assignments") window.location.href = "teacher_assignment.html";
+    if(type === "marks") window.location.href = "teacher_marks.html";
+    if(type === "study") window.location.href = "teacher_study.html";
+    if(type === "behavior") window.location.href = "teacher_behaviour.html";
+    if(type === "location") window.location.href = "teacher_location.html";
+    if(type === "prediction") window.location.href = "teacher_prediction.html";
+  }
+
+  // ================= STUDENT =================
+  else if(user.role === "Student"){
+    if(type === "attendance") window.location.href = "student_attendance.html";
+    if(type === "assignments") window.location.href = "student_assignment.html";
+    if(type === "marks") window.location.href = "student_marks.html";
+    if(type === "study") window.location.href = "student_study.html";
+    if(type === "behavior") window.location.href = "student_behaviour.html";
+    if(type === "location") window.location.href = "student_location.html";
+    if(type === "prediction") window.location.href = "student_prediction.html";
+  }
+
+  // ================= PARENT =================
+  else if(user.role === "Parent"){
+    if(type === "attendance") window.location.href = "parent_attendance.html";
+    if(type === "assignments") window.location.href = "parent_assignment.html";
+    if(type === "marks") window.location.href = "parent_marks.html";
+    if(type === "behavior") window.location.href = "parent_behaviour.html";
+    if(type === "location") window.location.href = "parent_location.html";
+    if(type === "prediction") window.location.href = "parent_prediction.html";
+  }
+
+  // ================= ADMIN =================
+  else if(user.role === "Admin"){
+    window.location.href = "admin_panel.html";
+  }
+}
+</script>
+
+
+</body>
+</html>
