@@ -4,18 +4,30 @@
 <title>Profile</title>
 <style>
 body{
-  font-family:Segoe UI;
+  font-family: Segoe UI;
   background:#a6a6da;
   padding:30px;
 }
+
 .card{
   background:#dcd3ff;
   padding:25px;
   border-radius:20px;
-  max-width:400px;
+  max-width:420px;
   margin:auto;
   box-shadow:0 10px 20px rgba(0,0,0,0.15);
+  text-align:center;
 }
+
+.profile-pic{
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  object-fit:cover;
+  border:4px solid #4a4a86;
+  margin-bottom:10px;
+}
+
 input,button{
   width:100%;
   padding:10px;
@@ -23,9 +35,21 @@ input,button{
   border-radius:10px;
   border:none;
 }
+
 button{
   background:#4a4a86;
   color:white;
+  cursor:pointer;
+}
+
+label{
+  float:left;
+  margin-top:10px;
+  font-weight:600;
+}
+
+hr{
+  margin:20px 0;
 }
 </style>
 </head>
@@ -35,11 +59,23 @@ button{
 <div class="card">
   <h2>👤 Profile</h2>
 
-  <p><b>Name:</b> <span id="name"></span></p>
-  <p><b>Email:</b> <span id="email"></span></p>
-  <p><b>Role:</b> <span id="role"></span></p>
+  <!-- PROFILE PHOTO -->
+  <img id="photo" class="profile-pic" src="" alt="Profile Photo">
+  <input type="file" accept="image/*" onchange="uploadPhoto(event)">
 
-  <!-- ✅ PARENT ONLY SECTION -->
+  <!-- EDITABLE INFO -->
+  <label>Name</label>
+  <input id="name">
+
+  <label>Email</label>
+  <input id="email">
+
+  <label>Role</label>
+  <input id="role" disabled>
+
+  <button onclick="saveProfile()">💾 Save Profile</button>
+
+  <!-- ✅ PARENT ONLY -->
   <div id="parentSection" style="display:none;">
     <hr>
     <h3>👶 Child Information</h3>
@@ -51,19 +87,22 @@ button{
 
 <script>
 window.onload = function(){
-
   let user = JSON.parse(localStorage.getItem("loggedUser"));
   if(!user){
     window.location.href="login.html";
     return;
   }
 
-  // show basic info
-  document.getElementById("name").innerText = user.name;
-  document.getElementById("email").innerText = user.email;
-  document.getElementById("role").innerText = user.role;
+  document.getElementById("name").value = user.name;
+  document.getElementById("email").value = user.email;
+  document.getElementById("role").value = user.role;
 
-  // show child section only for parent
+  // load photo
+  let photo = localStorage.getItem("profilePhoto");
+  document.getElementById("photo").src =
+    photo || "https://via.placeholder.com/120";
+
+  // parent section
   if(user.role === "Parent"){
     document.getElementById("parentSection").style.display = "block";
     document.getElementById("childName").value =
@@ -71,16 +110,37 @@ window.onload = function(){
   }
 };
 
+// SAVE PROFILE
+function saveProfile(){
+  let user = JSON.parse(localStorage.getItem("loggedUser"));
+
+  user.name = document.getElementById("name").value;
+  user.email = document.getElementById("email").value;
+
+  localStorage.setItem("loggedUser", JSON.stringify(user));
+  alert("✅ Profile updated successfully");
+}
+
+// PHOTO UPLOAD
+function uploadPhoto(event){
+  let reader = new FileReader();
+  reader.onload = function(){
+    document.getElementById("photo").src = reader.result;
+    localStorage.setItem("profilePhoto", reader.result);
+  };
+  reader.readAsDataURL(event.target.files[0]);
+}
+
+// SAVE CHILD
 function saveChild(){
   let name = document.getElementById("childName").value;
-
   if(!name){
     alert("Please enter child name");
     return;
   }
-
   localStorage.setItem("childName", name);
-  document.getElementById("msg").innerText = "✅ Child name saved successfully";
+  document.getElementById("msg").innerText =
+    "✅ Child name saved successfully";
 }
 </script>
 
