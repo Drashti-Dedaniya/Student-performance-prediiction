@@ -1,22 +1,69 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
 <title>Profile</title>
+
 <style>
 body{
-  font-family: Segoe UI;
+  font-family:Segoe UI;
   background:#a6a6da;
-  padding:30px;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
 
 .card{
-  background:#dcd3ff;
-  padding:25px;
-  border-radius:20px;
-  max-width:420px;
-  margin:auto;
-  box-shadow:0 10px 20px rgba(0,0,0,0.15);
+  background:#e3ddff;
+  padding:30px;
+  border-radius:22px;
+  width:380px;
+  box-shadow:0 15px 30px rgba(0,0,0,0.2);
+}
+
+h2{
   text-align:center;
+  margin-bottom:20px;
+}
+
+label{
+  font-weight:600;
+  margin-top:12px;
+  display:block;
+}
+
+input,button{
+  width:100%;
+  padding:10px;
+  margin-top:6px;
+  border-radius:10px;
+  border:none;
+  font-size:14px;
+}
+
+input{
+  background:#fff;
+}
+
+button{
+  background:#4a4a86;
+  color:white;
+  margin-top:20px;
+  cursor:pointer;
+}
+
+button:hover{
+  opacity:0.9;
+}
+
+/* PROFILE PHOTO */
+.photo-wrapper{
+  position:relative;
+  width:120px;
+  height:120px;
+  margin:0 auto 20px;
+  cursor:pointer;
 }
 
 .profile-pic{
@@ -25,31 +72,35 @@ body{
   border-radius:50%;
   object-fit:cover;
   border:4px solid #4a4a86;
-  margin-bottom:10px;
 }
 
-input,button{
-  width:100%;
-  padding:10px;
-  margin-top:10px;
-  border-radius:10px;
-  border:none;
-}
-
-button{
+.camera-icon{
+  position:absolute;
+  bottom:6px;
+  right:6px;
   background:#4a4a86;
   color:white;
-  cursor:pointer;
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:16px;
+  box-shadow:0 4px 8px rgba(0,0,0,0.3);
 }
 
-label{
-  float:left;
-  margin-top:10px;
-  font-weight:600;
+/* Parent section */
+#parentSection{
+  margin-top:20px;
+  padding-top:15px;
+  border-top:2px dashed #b2a7ff;
 }
 
-hr{
-  margin:20px 0;
+.msg{
+  margin-top:8px;
+  color:green;
+  font-size:14px;
 }
 </style>
 </head>
@@ -57,13 +108,18 @@ hr{
 <body>
 
 <div class="card">
+
   <h2>👤 Profile</h2>
 
-  <!-- PROFILE PHOTO -->
-  <img id="photo" class="profile-pic" src="" alt="Profile Photo">
-  <input type="file" accept="image/*" onchange="uploadPhoto(event)">
+  <!-- Profile Photo -->
+  <div class="photo-wrapper" onclick="openFile()">
+    <img id="photo" class="profile-pic">
+    <div class="camera-icon">📷</div>
+  </div>
 
-  <!-- EDITABLE INFO -->
+  <input type="file" id="fileInput" accept="image/*" hidden onchange="uploadPhoto(event)">
+
+  <!-- Editable Info -->
   <label>Name</label>
   <input id="name">
 
@@ -73,19 +129,32 @@ hr{
   <label>Role</label>
   <input id="role" disabled>
 
-  <button onclick="saveProfile()">💾 Save Profile</button>
-
-  <!-- ✅ PARENT ONLY -->
+  <!-- Parent Only -->
   <div id="parentSection" style="display:none;">
-    <hr>
     <h3>👶 Child Information</h3>
     <input id="childName" placeholder="Enter Child Name">
     <button onclick="saveChild()">Save Child Name</button>
-    <p id="msg"></p>
+    <p class="msg" id="msg"></p>
   </div>
+
+  <button onclick="saveProfile()">💾 Save Profile</button>
+
 </div>
 
 <script>
+function openFile(){
+  document.getElementById("fileInput").click();
+}
+
+function uploadPhoto(event){
+  let reader = new FileReader();
+  reader.onload = function(){
+    document.getElementById("photo").src = reader.result;
+    localStorage.setItem("profilePhoto", reader.result);
+  };
+  reader.readAsDataURL(event.target.files[0]);
+}
+
 window.onload = function(){
   let user = JSON.parse(localStorage.getItem("loggedUser"));
   if(!user){
@@ -97,12 +166,10 @@ window.onload = function(){
   document.getElementById("email").value = user.email;
   document.getElementById("role").value = user.role;
 
-  // load photo
-  let photo = localStorage.getItem("profilePhoto");
+  let savedPhoto = localStorage.getItem("profilePhoto");
   document.getElementById("photo").src =
-    photo || "https://via.placeholder.com/120";
+    savedPhoto || "https://via.placeholder.com/120";
 
-  // parent section
   if(user.role === "Parent"){
     document.getElementById("parentSection").style.display = "block";
     document.getElementById("childName").value =
@@ -110,7 +177,6 @@ window.onload = function(){
   }
 };
 
-// SAVE PROFILE
 function saveProfile(){
   let user = JSON.parse(localStorage.getItem("loggedUser"));
 
@@ -121,17 +187,6 @@ function saveProfile(){
   alert("✅ Profile updated successfully");
 }
 
-// PHOTO UPLOAD
-function uploadPhoto(event){
-  let reader = new FileReader();
-  reader.onload = function(){
-    document.getElementById("photo").src = reader.result;
-    localStorage.setItem("profilePhoto", reader.result);
-  };
-  reader.readAsDataURL(event.target.files[0]);
-}
-
-// SAVE CHILD
 function saveChild(){
   let name = document.getElementById("childName").value;
   if(!name){
@@ -139,8 +194,7 @@ function saveChild(){
     return;
   }
   localStorage.setItem("childName", name);
-  document.getElementById("msg").innerText =
-    "✅ Child name saved successfully";
+  document.getElementById("msg").innerText = "Child name saved successfully";
 }
 </script>
 
