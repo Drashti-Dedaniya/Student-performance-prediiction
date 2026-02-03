@@ -3,10 +3,36 @@
 <head>
 <title>Add Assignments</title>
 <style>
-body{font-family:Segoe UI;background:#a6a6da;padding:30px}
-.card{background:#dcd3ff;padding:25px;border-radius:20px;max-width:400px;margin:auto}
-input,button{width:100%;padding:10px;margin-top:10px;border-radius:10px;border:none}
-button{background:#4a4a86;color:white}
+body{
+  font-family: Segoe UI;
+  background:#a6a6da;
+  padding:30px
+}
+.card{
+  background:#dcd3ff;
+  padding:25px;
+  border-radius:20px;
+  max-width:420px;
+  margin:auto
+}
+input,button{
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+  border-radius:10px;
+  border:none
+}
+button{
+  background:#4a4a86;
+  color:white;
+  font-weight:600
+}
+.result{
+  font-weight:bold;
+  margin-top:10px;
+  text-align:center;
+  font-size:16px;
+}
 </style>
 </head>
 
@@ -14,19 +40,55 @@ button{background:#4a4a86;color:white}
 
 <script>
 let u = JSON.parse(localStorage.getItem("loggedUser"));
-if(!u || u.role!=="Teacher"){ location.href="dashboard.html"; }
+if(!u || u.role !== "Teacher"){
+  location.href = "dashboard.html";
+}
 </script>
 
 <div class="card">
 <h2>📘 Assignment Marks</h2>
-<input id="asg" type="number" placeholder="Assignment Avg Marks">
-<button onclick="save()">Save</button>
+
+<input type="number" id="math" placeholder="Maths Marks">
+<input type="number" id="science" placeholder="Science Marks">
+<input type="number" id="english" placeholder="English Marks">
+<input type="number" id="computer" placeholder="Computer Marks">
+
+<div class="result" id="total">Total: 0</div>
+<div class="result" id="avg">Average %: 0%</div>
+
+<button onclick="calculate()">Calculate</button>
+<button onclick="save()">Save Marks</button>
 </div>
 
 <script>
+function calculate(){
+  let marks = [
+    Number(math.value) || 0,
+    Number(science.value) || 0,
+    Number(english.value) || 0,
+    Number(computer.value) || 0
+  ];
+
+  let total = marks.reduce((a,b) => a + b, 0);
+  let average = (total / (marks.length * 100)) * 100;
+
+  document.getElementById("total").innerText = "Total: " + total;
+  document.getElementById("avg").innerText =
+    "Average %: " + average.toFixed(2) + "%";
+}
+
 function save(){
-  localStorage.setItem("assignments", document.getElementById("asg").value);
-  alert("Assignment marks saved");
+  let data = {
+    maths: math.value,
+    science: science.value,
+    english: english.value,
+    computer: computer.value,
+    total: document.getElementById("total").innerText.replace("Total: ",""),
+    average: document.getElementById("avg").innerText.replace("Average %: ","")
+  };
+
+  localStorage.setItem("assignmentMarks", JSON.stringify(data));
+  alert("Marks & average saved ✅");
 }
 </script>
 
