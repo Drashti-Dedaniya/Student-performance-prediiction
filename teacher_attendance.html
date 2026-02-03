@@ -1,12 +1,83 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Add Attendance</title>
+<title>Calendar Attendance</title>
 <style>
-body{font-family:Segoe UI;background:#a6a6da;padding:30px}
-.card{background:#dcd3ff;padding:25px;border-radius:20px;max-width:400px;margin:auto}
-input,button{width:100%;padding:10px;margin-top:10px;border-radius:10px;border:none}
-button{background:#4a4a86;color:white}
+body{
+  font-family: Segoe UI;
+  background:#a6a6da;
+  padding:30px
+}
+.card{
+  background:#dcd3ff;
+  padding:25px;
+  border-radius:20px;
+  max-width:540px;
+  margin:auto
+}
+.header{
+  text-align:center;
+  margin-bottom:10px;
+}
+.header h2{
+  margin-bottom:5px;
+}
+select.month{
+  padding:6px;
+  border-radius:8px;
+  border:none;
+}
+.calendar{
+  display:grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap:10px;
+  margin-top:15px;
+}
+.day{
+  background:white;
+  border-radius:10px;
+  padding:10px;
+  text-align:center;
+  font-size:14px;
+  transition:0.3s;
+}
+.day.present{ background:#b9f6ca; }
+.day.absent{ background:#ffb3b3; }
+.day.notTaken{ background:#e0e0e0; }
+
+.day select{
+  margin-top:5px;
+  width:100%;
+  border-radius:6px;
+}
+
+button{
+  width:100%;
+  padding:10px;
+  margin-top:15px;
+  border-radius:10px;
+  border:none;
+  background:#4a4a86;
+  color:white;
+  font-weight:600;
+}
+
+.result{
+  text-align:center;
+  font-weight:bold;
+  margin-top:15px;
+}
+
+.legend{
+  display:flex;
+  justify-content:space-around;
+  margin-top:10px;
+  font-size:14px;
+}
+.legend span{
+  padding:5px 10px;
+  border-radius:8px;
+}
 </style>
 </head>
 
@@ -14,19 +85,103 @@ button{background:#4a4a86;color:white}
 
 <script>
 let u = JSON.parse(localStorage.getItem("loggedUser"));
-if(!u || u.role!=="Teacher"){ location.href="dashboard.html"; }
+if(!u || u.role !== "Teacher"){
+  location.href="dashboard.html";
+}
 </script>
 
 <div class="card">
-<h2>📅 Add Attendance</h2>
-<input id="att" type="number" placeholder="Attendance %">
-<button onclick="save()">Save</button>
+
+<div class="header">
+  <h2>📅 Attendance Calendar</h2>
+  <select class="month" id="monthName">
+    <option>January</option>
+    <option>February</option>
+    <option>March</option>
+    <option>April</option>
+    <option>May</option>
+    <option>June</option>
+    <option>July</option>
+    <option>August</option>
+    <option>September</option>
+    <option>October</option>
+    <option>November</option>
+    <option>December</option>
+  </select>
+</div>
+
+<div class="legend">
+  <span style="background:#b9f6ca">Present</span>
+  <span style="background:#ffb3b3">Absent</span>
+  <span style="background:#e0e0e0">Not Taken</span>
+</div>
+
+<div class="calendar" id="calendar"></div>
+
+<div class="result" id="percent">Attendance: 0%</div>
+
+<button onclick="calculate()">Calculate Attendance</button>
+<button onclick="save()">Save Attendance</button>
+
 </div>
 
 <script>
+const cal = document.getElementById("calendar");
+
+// generate days
+for(let i=1; i<=31; i++){
+  cal.innerHTML += `
+    <div class="day notTaken" id="box${i}">
+      Day ${i}
+      <select id="day${i}" onchange="mark(${i})">
+        <option value="N">Not Taken</option>
+        <option value="P">Present</option>
+        <option value="A">Absent</option>
+      </select>
+    </div>
+  `;
+}
+
+function mark(i){
+  let box = document.getElementById("box"+i);
+  let val = document.getElementById("day"+i).value;
+
+  box.className = "day";
+  if(val === "P") box.classList.add("present");
+  else if(val === "A") box.classList.add("absent");
+  else box.classList.add("notTaken");
+}
+
+function calculate(){
+  let present = 0;
+  let total = 0;
+
+  for(let i=1; i<=31; i++){
+    let v = document.getElementById("day"+i).value;
+    if(v !== "N"){
+      total++;
+      if(v === "P") present++;
+    }
+  }
+
+  let percent = total ? (present / total) * 100 : 0;
+  document.getElementById("percent").innerText =
+    "Attendance: " + percent.toFixed(2) + "%";
+}
+
 function save(){
-  localStorage.setItem("attendance", document.getElementById("att").value);
-  alert("Attendance saved");
+  let month = document.getElementById("monthName").value;
+  let data = { month };
+
+  for(let i=1; i<=31; i++){
+    data["day"+i] = document.getElementById("day"+i).value;
+  }
+
+  data.attendancePercent =
+    document.getElementById("percent").innerText.replace("Attendance: ","");
+
+  localStorage.setItem("calendarAttendance_"+month, JSON.stringify(data));
+  alert("Attendance saved for " + month + " ✅");
 }
 </script>
 
