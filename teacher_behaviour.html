@@ -1,12 +1,51 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Behavior</title>
+<title>Student Behavior</title>
+
 <style>
-body{font-family:Segoe UI;background:#a6a6da;padding:30px}
-.card{background:#dcd3ff;padding:25px;border-radius:20px;max-width:400px;margin:auto}
-select,button{width:100%;padding:10px;margin-top:10px;border-radius:10px;border:none}
-button{background:#4a4a86;color:white}
+body{
+  font-family:Segoe UI;
+  background:#a6a6da;
+  padding:30px;
+}
+
+.card{
+  background:#dcd3ff;
+  padding:25px;
+  border-radius:20px;
+  max-width:420px;
+  margin:auto;
+}
+
+input, select, button{
+  width:100%;
+  padding:12px;
+  margin-top:12px;
+  border-radius:10px;
+  border:none;
+  font-size:15px;
+}
+
+button{
+  background:#4a4a86;
+  color:white;
+  cursor:pointer;
+}
+
+.beh-preview{
+  margin-top:15px;
+  padding:12px;
+  border-radius:10px;
+  text-align:center;
+  font-weight:600;
+}
+
+/* Behavior colors */
+.excellent{ background:#b9f6ca; color:#1b5e20; }
+.good{ background:#c5cae9; color:#283593; }
+.average{ background:#fff9c4; color:#f57f17; }
+.poor{ background:#ffcdd2; color:#b71c1c; }
 </style>
 </head>
 
@@ -14,24 +53,59 @@ button{background:#4a4a86;color:white}
 
 <script>
 let u = JSON.parse(localStorage.getItem("loggedUser"));
-if(!u || u.role!=="Teacher"){ location.href="dashboard.html"; }
+if(!u || u.role!=="Teacher"){
+  location.href="dashboard.html";
+}
 </script>
 
 <div class="card">
-<h2>🙂 Behavior</h2>
-<select id="beh">
-  <option value="10">Excellent</option>
-  <option value="7">Good</option>
-  <option value="5">Average</option>
-  <option value="2">Poor</option>
-</select>
-<button onclick="save()">Save</button>
+  <h2>🙂 Student Behavior</h2>
+
+  <input type="text" id="name" placeholder="Student Name">
+  <input type="text" id="roll" placeholder="Roll Number">
+
+  <select id="beh" onchange="preview()">
+    <option value="">Select Behavior</option>
+    <option value="excellent">Excellent</option>
+    <option value="good">Good</option>
+    <option value="average">Average</option>
+    <option value="poor">Poor</option>
+  </select>
+
+  <div id="preview" class="beh-preview">No behavior selected</div>
+
+  <button onclick="save()">Save Behavior</button>
 </div>
 
 <script>
+function preview(){
+  let beh = document.getElementById("beh").value;
+  let box = document.getElementById("preview");
+
+  if(beh===""){
+    box.className="beh-preview";
+    box.innerHTML="No behavior selected";
+    return;
+  }
+
+  box.className = "beh-preview " + beh;
+  box.innerHTML = beh.charAt(0).toUpperCase() + beh.slice(1);
+}
+
 function save(){
-  localStorage.setItem("behavior", document.getElementById("beh").value);
-  alert("Behavior saved");
+  let name = document.getElementById("name").value;
+  let roll = document.getElementById("roll").value;
+  let beh = document.getElementById("beh").value;
+
+  if(!name || !roll || !beh){
+    alert("Please fill all fields");
+    return;
+  }
+
+  let data = { name, roll, behavior: beh };
+  localStorage.setItem("behavior_"+roll, JSON.stringify(data));
+
+  alert("Behavior saved successfully ✅");
 }
 </script>
 
