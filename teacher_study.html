@@ -2,11 +2,79 @@
 <html>
 <head>
 <title>Study Hours</title>
+
 <style>
-body{font-family:Segoe UI;background:#a6a6da;padding:30px}
-.card{background:#dcd3ff;padding:25px;border-radius:20px;max-width:400px;margin:auto}
-input,button{width:100%;padding:10px;margin-top:10px;border-radius:10px;border:none}
-button{background:#4a4a86;color:white}
+body{
+  font-family:Segoe UI;
+  background:#a6a6da;
+  padding:30px;
+}
+
+.card{
+  background:#dcd3ff;
+  padding:25px;
+  border-radius:20px;
+  max-width:420px;
+  margin:auto;
+  text-align:center;
+}
+
+input, button{
+  width:100%;
+  padding:12px;
+  margin-top:12px;
+  border-radius:10px;
+  border:none;
+  font-size:15px;
+}
+
+button{
+  background:#4a4a86;
+  color:white;
+  cursor:pointer;
+}
+
+/* Clock */
+.clock{
+  margin:20px auto;
+  width:180px;
+  height:180px;
+  border:8px solid #4a4a86;
+  border-radius:50%;
+  position:relative;
+  background:#f4f1ff;
+}
+
+.hand{
+  position:absolute;
+  width:3px;
+  height:70px;
+  background:#4a4a86;
+  top:20px;
+  left:50%;
+  transform-origin:bottom;
+}
+
+.center{
+  width:12px;
+  height:12px;
+  background:#4a4a86;
+  border-radius:50%;
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+}
+
+.range{
+  margin-top:15px;
+}
+
+.hours-text{
+  margin-top:10px;
+  font-weight:600;
+  font-size:18px;
+}
 </style>
 </head>
 
@@ -14,19 +82,56 @@ button{background:#4a4a86;color:white}
 
 <script>
 let u = JSON.parse(localStorage.getItem("loggedUser"));
-if(!u || u.role!=="Teacher"){ location.href="dashboard.html"; }
+if(!u || u.role!=="Teacher"){
+  location.href="dashboard.html";
+}
 </script>
 
 <div class="card">
-<h2>⏱ Study Hours</h2>
-<input id="hours" type="number" placeholder="Hours / Day">
-<button onclick="save()">Save</button>
+  <h2>⏱ Study Hours</h2>
+
+  <input id="name" placeholder="Student Name">
+  <input id="roll" placeholder="Roll Number">
+
+  <div class="clock">
+    <div id="hand" class="hand"></div>
+    <div class="center"></div>
+  </div>
+
+  <input class="range" type="range" min="0" max="12" value="0" oninput="updateClock(this.value)">
+  <div id="hoursText" class="hours-text">0 Hours / Day</div>
+
+  <button onclick="save()">Save Study Hours</button>
 </div>
 
 <script>
+let hours = 0;
+
+function updateClock(val){
+  hours = val;
+  let deg = (val / 12) * 360;
+  document.getElementById("hand").style.transform = 
+    "translateX(-50%) rotate(" + deg + "deg)";
+  document.getElementById("hoursText").innerHTML = val + " Hours / Day";
+}
+
 function save(){
-  localStorage.setItem("hours", document.getElementById("hours").value);
-  alert("Study hours saved");
+  let name = document.getElementById("name").value;
+  let roll = document.getElementById("roll").value;
+
+  if(!name || !roll){
+    alert("Please fill all fields");
+    return;
+  }
+
+  let data = {
+    name: name,
+    roll: roll,
+    hours: hours
+  };
+
+  localStorage.setItem("study_" + roll, JSON.stringify(data));
+  alert("Study hours saved successfully ✅");
 }
 </script>
 
