@@ -2,9 +2,55 @@
 <html>
 <head>
 <title>Final Prediction</title>
+
 <style>
-body{font-family:Segoe UI;background:#a6a6da;padding:30px}
-.card{background:#dcd3ff;padding:30px;border-radius:20px;max-width:400px;margin:auto;text-align:center}
+body{
+  font-family:Segoe UI;
+  background:#a6a6da;
+  padding:30px;
+}
+
+.card{
+  background:#dcd3ff;
+  padding:30px;
+  border-radius:20px;
+  max-width:450px;
+  margin:auto;
+  text-align:center;
+}
+
+input, button{
+  width:100%;
+  padding:12px;
+  margin-top:12px;
+  border-radius:10px;
+  border:none;
+}
+
+button{
+  background:#4a4a86;
+  color:white;
+  cursor:pointer;
+}
+
+.result{
+  margin-top:20px;
+  padding:20px;
+  border-radius:15px;
+  font-size:18px;
+  font-weight:600;
+}
+
+.excellent{ background:#c8e6c9; color:#1b5e20; }
+.good{ background:#bbdefb; color:#0d47a1; }
+.average{ background:#fff9c4; color:#f57f17; }
+.poor{ background:#ffcdd2; color:#b71c1c; }
+
+.breakdown{
+  margin-top:15px;
+  font-size:14px;
+  text-align:left;
+}
 </style>
 </head>
 
@@ -12,29 +58,87 @@ body{font-family:Segoe UI;background:#a6a6da;padding:30px}
 
 <script>
 let u = JSON.parse(localStorage.getItem("loggedUser"));
-if(!u || u.role!=="Teacher"){ location.href="dashboard.html"; }
+if(!u || u.role!=="Teacher"){
+  location.href="dashboard.html";
+}
 </script>
 
 <div class="card">
-<h2>🎯 Final Prediction</h2>
-<p id="result"></p>
+  <h2>🎯 Final Prediction</h2>
+
+  <input id="roll" placeholder="Enter Roll Number">
+  <button onclick="predict()">Predict Result</button>
+
+  <div id="output"></div>
 </div>
 
 <script>
-let att = +localStorage.getItem("attendance") || 0;
-let asg = +localStorage.getItem("assignments") || 0;
-let marks = +localStorage.getItem("marks") || 0;
-let hours = +localStorage.getItem("hours") || 0;
-let behavior = +localStorage.getItem("behavior") || 0;
+function predict(){
+  let roll = document.getElementById("roll").value;
+  if(!roll){
+    alert("Enter roll number");
+    return;
+  }
 
-let score = (att*0.25)+(asg*0.25)+(marks*0.3)+(hours*5)+(behavior);
+  let attendance = +localStorage.getItem("attendance_"+roll) || 0;
+  let assignments = +localStorage.getItem("assignments_"+roll) || 0;
+  let marksData = JSON.parse(localStorage.getItem("marks_"+roll)) || {};
+  let study = JSON.parse(localStorage.getItem("study_"+roll)) || {};
+  let behaviorData = JSON.parse(localStorage.getItem("behavior_"+roll)) || {};
 
-let res = "Needs Improvement ❌";
-if(score>=80) res="🌟 Excellent – High Success";
-else if(score>=60) res="👍 Good Performance";
-else if(score>=45) res="⚠️ Average";
+  let marksAvg = (
+    (+marksData.maths || 0) +
+    (+marksData.science || 0) +
+    (+marksData.english || 0) +
+    (+marksData.computer || 0)
+  ) / 4;
 
-document.getElementById("result").innerText = res;
+  let behaviorScore = {
+    excellent:10,
+    good:7,
+    average:5,
+    poor:2
+  }[behaviorData.behavior] || 0;
+
+  let totalScore =
+    (attendance * 0.25) +
+    (assignments * 0.25) +
+    (marksAvg * 0.3) +
+    ((study.hours || 0) * 5) +
+    behaviorScore;
+
+  let resultText = "Needs Improvement ❌";
+  let cls = "poor";
+
+  if(totalScore >= 80){
+    resultText = "🌟 Excellent – High Chance of Success";
+    cls = "excellent";
+  }
+  else if(totalScore >= 60){
+    resultText = "👍 Good Performance – Likely to Pass";
+    cls = "good";
+  }
+  else if(totalScore >= 45){
+    resultText = "⚠️ Average – Needs More Effort";
+    cls = "average";
+  }
+
+  document.getElementById("output").innerHTML = `
+    <div class="result ${cls}">
+      ${resultText}<br><br>
+      Total Score: ${Math.round(totalScore)}
+    </div>
+
+    <div class="breakdown">
+      <b>Score Breakdown:</b><br>
+      Attendance: ${attendance}<br>
+      Assignments: ${assignments}<br>
+      Average Marks: ${marksAvg.toFixed(1)}<br>
+      Study Hours: ${study.hours || 0}<br>
+      Behavior: ${behaviorData.behavior || "Not Set"}
+    </div>
+  `;
+}
 </script>
 
 </body>
