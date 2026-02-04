@@ -2,11 +2,36 @@
 <html>
 <head>
 <title>Add Internal Marks</title>
+
 <style>
-body{font-family:Segoe UI;background:#a6a6da;padding:30px}
-.card{background:#dcd3ff;padding:25px;border-radius:20px;max-width:400px;margin:auto}
-input,button{width:100%;padding:10px;margin-top:10px;border-radius:10px;border:none}
-button{background:#4a4a86;color:white}
+body{
+  font-family:Segoe UI;
+  background:#a6a6da;
+  padding:30px;
+}
+
+.card{
+  background:#dcd3ff;
+  padding:25px;
+  border-radius:20px;
+  max-width:420px;
+  margin:auto;
+}
+
+input, button{
+  width:100%;
+  padding:12px;
+  margin-top:12px;
+  border-radius:10px;
+  border:none;
+  font-size:15px;
+}
+
+button{
+  background:#4a4a86;
+  color:white;
+  cursor:pointer;
+}
 </style>
 </head>
 
@@ -14,19 +39,51 @@ button{background:#4a4a86;color:white}
 
 <script>
 let u = JSON.parse(localStorage.getItem("loggedUser"));
-if(!u || u.role!=="Teacher"){ location.href="dashboard.html"; }
+if(!u || u.role!=="Teacher"){
+  location.href="dashboard.html";
+}
 </script>
 
 <div class="card">
-<h2>📝 Internal Marks</h2>
-<input id="marks" type="number" placeholder="Internal Marks">
-<button onclick="save()">Save</button>
+  <h2>📝 Internal Marks</h2>
+
+  <input id="name" type="text" placeholder="Student Name">
+  <input id="roll" type="text" placeholder="Roll Number">
+
+  <input id="maths" type="number" placeholder="Maths Marks">
+  <input id="science" type="number" placeholder="Science Marks">
+  <input id="english" type="number" placeholder="English Marks">
+  <input id="computer" type="number" placeholder="Computer Marks">
+
+  <button onclick="save()">Save Marks</button>
 </div>
 
 <script>
 function save(){
-  localStorage.setItem("marks", document.getElementById("marks").value);
-  alert("Internal marks saved");
+  let name = document.getElementById("name").value;
+  let roll = document.getElementById("roll").value;
+
+  let maths = document.getElementById("maths").value;
+  let science = document.getElementById("science").value;
+  let english = document.getElementById("english").value;
+  let computer = document.getElementById("computer").value;
+
+  if(!name || !roll || !maths || !science || !english || !computer){
+    alert("Please fill all fields");
+    return;
+  }
+
+  let data = {
+    name: name,
+    roll: roll,
+    maths: maths,
+    science: science,
+    english: english,
+    computer: computer
+  };
+
+  localStorage.setItem("marks_" + roll, JSON.stringify(data));
+  alert("Internal marks saved successfully ✅");
 }
 </script>
 
